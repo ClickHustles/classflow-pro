@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            // 'tutor' or 'parent' to easily route their dashboard experience
+            $table->enum('role', ['tutor', 'parent'])->default('parent'); 
             $table->rememberToken();
             $table->timestamps();
         });
@@ -40,10 +42,8 @@ return new class extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void
+ public function down(): void
     {
         Schema::dropIfExists('users');
-        Schema::dropIfExists('password_reset_tokens');
-        Schema::dropIfExists('sessions');
     }
 };
