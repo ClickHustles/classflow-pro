@@ -60,8 +60,9 @@ Route::prefix('tutor')->name('tutor.')->group(function () {
         return view('dashboard');
     })->name('dashboard');
 
-    Route::get('/onboarding', function () { return 'Tutor Onboarding Checklist'; })->name('onboarding');
-    Route::get('/stripe/connect', function () { return 'Stripe Connect Flow'; })->name('stripe.connect');
+   Route::get('/onboarding', function () { 
+    return view('tutor.onboarding'); 
+})->name('onboarding');Route::get('/stripe/connect', function () { return 'Stripe Connect Flow'; })->name('stripe.connect');
     Route::get('/profile', function () { return 'Profile Editor'; })->name('profile.edit');
     Route::get('/calendar', function () { return 'Availability & Calendar'; })->name('calendar');
     Route::get('/sessions', function () { return 'Session Management'; })->name('sessions');
