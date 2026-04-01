@@ -62,8 +62,10 @@ Route::prefix('tutor')->name('tutor.')->group(function () {
 
    Route::get('/onboarding', function () { 
     return view('tutor.onboarding'); 
-})->name('onboarding');Route::get('/stripe/connect', function () { return 'Stripe Connect Flow'; })->name('stripe.connect');
-    Route::get('/profile', function () { return 'Profile Editor'; })->name('profile.edit');
+})->name('onboarding');
+    Route::get('/stripe/connect', function () { 
+    return view('tutor.stripe'); 
+})->name('stripe.connect');Route::get('/profile', function () { return 'Profile Editor'; })->name('profile.edit');
     Route::get('/calendar', function () { return 'Availability & Calendar'; })->name('calendar');
     Route::get('/sessions', function () { return 'Session Management'; })->name('sessions');
     Route::get('/earnings', function () { return 'Earnings & Fees'; })->name('earnings');
