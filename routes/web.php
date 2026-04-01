@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\RegisterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,11 +43,15 @@ Route::get('/parent/dashboard', function () { return 'Parent Dashboard'; })->nam
 
 /*
 |--------------------------------------------------------------------------
-| Authentication (Temporary Stubs)
+| Authentication
 |--------------------------------------------------------------------------
 */
 Route::get('/login', function () { return view('auth.login'); })->name('login');
+
+// Tutor Registration Routes
 Route::get('/register', function () { return view('auth.register'); })->name('register');
+Route::post('/register', [RegisterController::class, 'register']);
+
 Route::get('/password/forgot', function () { return 'Forgot Password Page'; })->name('password.request');
 Route::get('/password/reset/{token}', function ($token) { return 'Reset Password Page'; })->name('password.reset');
 
@@ -55,26 +60,28 @@ Route::get('/password/reset/{token}', function ($token) { return 'Reset Password
 | Tutor Dashboard & Management
 |--------------------------------------------------------------------------
 */
-// Grouping these under /tutor makes it incredibly easy to lock down with middleware later
 Route::prefix('tutor')->name('tutor.')->group(function () {
     
-    // The main tutor dashboard view we already built
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
 
-   Route::get('/onboarding', function () { 
-    return view('tutor.onboarding'); 
-})->name('onboarding');
+    Route::get('/onboarding', function () { 
+        return view('tutor.onboarding'); 
+    })->name('onboarding');
+    
     Route::get('/stripe/connect', function () { 
-    return view('tutor.stripe'); 
-})->name('stripe.connect');
-Route::get('/profile', function () { 
-    return view('tutor.profile'); 
-})->name('profile.edit');
+        return view('tutor.stripe'); 
+    })->name('stripe.connect');
+    
+    Route::get('/profile', function () { 
+        return view('tutor.profile'); 
+    })->name('profile.edit');
+    
     Route::get('/calendar', function () { 
-    return view('tutor.calendar'); 
-})->name('calendar');
+        return view('tutor.calendar'); 
+    })->name('calendar');
+    
     Route::get('/sessions', function () { return 'Session Management'; })->name('sessions');
     Route::get('/earnings', function () { return 'Earnings & Fees'; })->name('earnings');
     Route::get('/reviews', function () { return 'Reviews Management'; })->name('reviews');
@@ -92,8 +99,8 @@ Route::get('/dashboard', function () {
 */
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/', function () { 
-    return view('admin.dashboard'); 
-})->name('dashboard');
+        return view('admin.dashboard'); 
+    })->name('dashboard');
     Route::get('/tutors', function () { return 'Admin: Tutor Management'; })->name('tutors');
     Route::get('/bookings', function () { return 'Admin: Booking Logs'; })->name('bookings');
     Route::get('/reviews', function () { return 'Admin: Reviews Moderation'; })->name('reviews');

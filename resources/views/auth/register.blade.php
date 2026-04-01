@@ -31,41 +31,42 @@
             <h1 class="text-3xl font-bold mb-2">Create your tutor account</h1>
             <p class="text-gray-500 mb-8">Join the anti-marketplace. Keep 100% of your hourly rate.</p>
 
-            <form action="#" method="POST" class="space-y-5">
+            <form action="{{ route('register') }}" method="POST" class="space-y-5">
+                @csrf
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
-                        <input type="text" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-brand-green focus:ring-2 focus:ring-brand-green/20 outline-none transition-all" placeholder="Sarah">
+                        <input type="text" name="first_name" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-brand-green focus:ring-2 focus:ring-brand-green/20 outline-none transition-all" placeholder="Sarah">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
-                        <input type="text" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-brand-green focus:ring-2 focus:ring-brand-green/20 outline-none transition-all" placeholder="Mitchell">
+                        <input type="text" name="last_name" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-brand-green focus:ring-2 focus:ring-brand-green/20 outline-none transition-all" placeholder="Mitchell">
                     </div>
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                    <input type="email" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-brand-green focus:ring-2 focus:ring-brand-green/20 outline-none transition-all" placeholder="sarah@example.com">
+                    <input type="email" name="email" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-brand-green focus:ring-2 focus:ring-brand-green/20 outline-none transition-all" placeholder="sarah@example.com">
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                    <input type="password" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-brand-green focus:ring-2 focus:ring-brand-green/20 outline-none transition-all" placeholder="••••••••">
+                    <input type="password" name="password" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-brand-green focus:ring-2 focus:ring-brand-green/20 outline-none transition-all" placeholder="••••••••">
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Primary Teaching Subject</label>
-                    <select class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-brand-green focus:ring-2 focus:ring-brand-green/20 outline-none transition-all bg-white text-gray-600">
-                        <option>Math & Sciences</option>
-                        <option>Reading & English</option>
-                        <option>Test Prep (SAT/ACT)</option>
-                        <option>Foreign Languages</option>
-                        <option>Music & Arts</option>
-                        <option>Other</option>
+                    <select name="subject" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-brand-green focus:ring-2 focus:ring-brand-green/20 outline-none transition-all bg-white text-gray-600">
+                        <option value="Math & Sciences">Math & Sciences</option>
+                        <option value="Reading & English">Reading & English</option>
+                        <option value="Test Prep (SAT/ACT)">Test Prep (SAT/ACT)</option>
+                        <option value="Foreign Languages">Foreign Languages</option>
+                        <option value="Music & Arts">Music & Arts</option>
+                        <option value="Other">Other</option>
                     </select>
                 </div>
 
-                <button type="button" onclick="window.location.href='/tutor/dashboard'" class="w-full py-4 bg-brand-green text-white font-bold rounded-xl hover:bg-opacity-90 transition-all shadow-md mt-4">
+                <button type="submit" class="w-full py-4 bg-brand-green text-white font-bold rounded-xl hover:bg-opacity-90 transition-all shadow-md mt-4">
                     Create Account & Continue
                 </button>
             </form>
