@@ -20,12 +20,13 @@
             }
         }
     </script>
+    <style>[x-cloak] { display: none !important; }</style>
 </head>
 <body class="bg-brand-cream text-brand-slate antialiased selection:bg-brand-red selection:text-white overflow-x-hidden">
 
     <header x-data="{ mobileMenuOpen: false }" class="fixed top-0 inset-x-0 w-full bg-white/90 backdrop-blur-md border-b border-gray-200 z-50">
         <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
-            <a href="/" class="text-2xl font-bold tracking-tight text-brand-slate flex items-center gap-2 relative z-10">
+            <a href="{{ route('home') }}" class="text-2xl font-bold tracking-tight text-brand-slate flex items-center gap-2 relative z-10">
                 <svg class="w-8 h-8 text-brand-green" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
                 ClassFlow<span class="text-brand-red">Pro</span>
             </a>
@@ -37,7 +38,7 @@
                 
                 <div class="flex items-center gap-4 ml-4 pl-4 border-l border-gray-200">
                     @auth
-                        <a href="{{ url('/dashboard') }}" class="font-bold hover:text-brand-red transition-colors">Dashboard</a>
+                        <a href="{{ route('dashboard') }}" class="font-bold hover:text-brand-red transition-colors">Dashboard</a>
                     @else
                         <a href="{{ route('login') }}" class="font-bold hover:text-brand-red transition-colors">Log in</a>
                         <a href="{{ route('search') }}" class="inline-flex items-center justify-center px-6 py-2.5 rounded-full bg-brand-slate text-white font-bold hover:bg-gray-800 transition-all shadow-md">
@@ -49,17 +50,17 @@
 
             <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden p-2 text-brand-slate focus:outline-none relative z-10">
                 <svg x-show="!mobileMenuOpen" class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-                <svg x-show="mobileMenuOpen" style="display:none;" class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                <svg x-show="mobileMenuOpen" x-cloak class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
         </div>
 
-        <div x-show="mobileMenuOpen" style="display: none;" class="md:hidden absolute top-20 inset-x-0 bg-white border-b border-gray-200 shadow-2xl px-6 py-8 flex flex-col gap-4">
+        <div x-show="mobileMenuOpen" x-cloak class="md:hidden absolute top-20 inset-x-0 bg-white border-b border-gray-200 shadow-2xl px-6 py-8 flex flex-col gap-4">
             <a href="#parents" @click="mobileMenuOpen = false" class="font-bold text-lg text-brand-slate">For Parents</a>
             <a href="#tutors" @click="mobileMenuOpen = false" class="font-bold text-lg text-brand-slate">For Tutors</a>
             <a href="{{ route('teach') }}" class="font-bold text-lg text-brand-green">Apply to Teach</a>
             <hr class="border-gray-100">
             @auth
-                <a href="{{ url('/dashboard') }}" class="font-bold text-lg">Dashboard</a>
+                <a href="{{ route('dashboard') }}" class="font-bold text-lg">Dashboard</a>
             @else
                 <a href="{{ route('login') }}" class="font-bold text-lg">Log in</a>
                 <a href="{{ route('search') }}" class="w-full py-4 rounded-xl bg-brand-slate text-white font-black text-center text-lg">Find a Tutor</a>
@@ -84,9 +85,15 @@
                 x-data="{ 
                     subjectMenuOpen: false, 
                     searchTerm: '',
-                    subjects: ['Algebra', 'Geometry', 'Calculus', 'Statistics', 'SAT Prep', 'ACT Prep', 'Physics', 'Chemistry', 'Biology', 'Spanish', 'French', 'Reading', 'Phonics', 'Special Education', 'ADHD Coaching'],
+                    subjects: [
+                        'Algebra', 'Geometry', 'Calculus', 'Statistics', 'Trigonometry', 'Physics', 'Chemistry', 'Biology', 
+                        'SAT Prep', 'ACT Prep', 'LSAT Prep', 'GRE Prep', 'English', 'Reading', 'Writing', 'Literature', 
+                        'Spanish', 'French', 'German', 'Chinese', 'Japanese', 'Music Theory', 'Piano', 'Guitar',
+                        'Computer Science', 'Python', 'Web Development', 'Special Education', 'ADHD Coaching', 'Dyslexia Support'
+                    ],
                     get filteredSubjects() {
-                        return this.subjects.filter(s => s.toLowerCase().includes(this.searchTerm.toLowerCase()))
+                        if (this.searchTerm === '') return [];
+                        return this.subjects.filter(s => s.toLowerCase().includes(this.searchTerm.toLowerCase())).slice(0, 5);
                     }
                 }" 
                 class="bg-white p-3 rounded-2xl md:rounded-full shadow-2xl border border-gray-200 max-w-5xl mx-auto flex flex-col md:flex-row gap-3 relative z-40">
@@ -111,19 +118,18 @@
                         </div>
                     </div>
 
-                    <div x-show="subjectMenuOpen" 
+                    <div x-show="subjectMenuOpen" x-cloak
                         x-transition:enter="transition ease-out duration-200"
                         x-transition:enter-start="opacity-0 translate-y-4"
                         x-transition:enter-end="opacity-100 translate-y-0"
-                        class="absolute top-full left-0 mt-4 w-full md:w-[640px] bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-gray-100 overflow-hidden text-left z-50" 
-                        style="display: none;">
+                        class="absolute top-full left-0 mt-4 w-full md:w-[640px] bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-gray-100 overflow-hidden text-left z-50">
                         
                         <template x-if="searchTerm.length > 0">
                             <div class="p-4">
                                 <h3 class="px-4 text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Suggestions</h3>
                                 <div class="grid grid-cols-1 gap-1">
                                     <template x-for="result in filteredSubjects" :key="result">
-                                        <button type="button" @click="searchTerm = result; subjectMenuOpen = false" class="px-4 py-3 hover:bg-brand-lightgreen rounded-xl text-left font-bold text-brand-slate transition-colors flex justify-between items-center group">
+                                        <button type="button" @click="searchTerm = result; subjectMenuOpen = false" class="w-full px-4 py-3 hover:bg-brand-lightgreen rounded-xl text-left font-bold text-brand-slate transition-colors flex justify-between items-center group">
                                             <span x-text="result"></span>
                                             <svg class="w-4 h-4 text-brand-green opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 12h14m-7-7l7 7-7 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
                                         </button>
@@ -142,18 +148,20 @@
                                         <h4 class="text-[10px] font-black text-blue-500 uppercase tracking-widest mb-4 flex items-center gap-2">
                                             <span class="w-2 h-2 rounded-full bg-blue-500"></span> Math & Science
                                         </h4>
-                                        <ul class="space-y-3">
-                                            <li><button type="button" @click="searchTerm = 'Algebra'; subjectMenuOpen = false" class="hover:text-brand-green font-bold transition-colors">Algebra & Geometry</button></li>
-                                            <li><button type="button" @click="searchTerm = 'Calculus'; subjectMenuOpen = false" class="hover:text-brand-green font-bold transition-colors">Calculus & Stats</button></li>
+                                        <ul class="space-y-3 font-bold text-sm">
+                                            <li><button type="button" @click="searchTerm = 'Algebra'; subjectMenuOpen = false" class="hover:text-brand-green transition-colors w-full text-left">Algebra & Geometry</button></li>
+                                            <li><button type="button" @click="searchTerm = 'Calculus'; subjectMenuOpen = false" class="hover:text-brand-green transition-colors w-full text-left">Calculus & Stats</button></li>
+                                            <li><button type="button" @click="searchTerm = 'Physics'; subjectMenuOpen = false" class="hover:text-brand-green transition-colors w-full text-left">Physics & Chemistry</button></li>
                                         </ul>
                                     </div>
                                     <div>
                                         <h4 class="text-[10px] font-black text-brand-red uppercase tracking-widest mb-4 flex items-center gap-2">
-                                            <span class="w-2 h-2 rounded-full bg-brand-red"></span> Test Prep
+                                            <span class="w-2 h-2 rounded-full bg-brand-red"></span> Special Focus
                                         </h4>
-                                        <ul class="space-y-3">
-                                            <li><button type="button" @click="searchTerm = 'SAT Prep'; subjectMenuOpen = false" class="hover:text-brand-green font-bold transition-colors">SAT / ACT Prep</button></li>
-                                            <li><button type="button" @click="searchTerm = 'AP Exams'; subjectMenuOpen = false" class="hover:text-brand-green font-bold transition-colors">AP Exam Mastery</button></li>
+                                        <ul class="space-y-3 font-bold text-sm">
+                                            <li><button type="button" @click="searchTerm = 'SAT Prep'; subjectMenuOpen = false" class="hover:text-brand-green transition-colors w-full text-left">SAT / ACT Prep</button></li>
+                                            <li><button type="button" @click="searchTerm = 'Reading'; subjectMenuOpen = false" class="hover:text-brand-green transition-colors w-full text-left">Reading & Phonics</button></li>
+                                            <li><button type="button" @click="searchTerm = 'ADHD Coaching'; subjectMenuOpen = false" class="hover:text-brand-green transition-colors w-full text-left">ADHD Coaching</button></li>
                                         </ul>
                                     </div>
                                 </div>
