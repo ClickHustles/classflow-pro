@@ -55,13 +55,13 @@ Route::get('/password/reset/{token}', function ($token) { return view('auth.pass
 */
 Route::middleware(['auth'])->group(function() {
 
-    // 1. Smart Dashboard Redirect
+    // 1. Smart Dashboard Redirect (FIXED: Added name('dashboard'))
     Route::get('/dashboard', function () {
         if (auth()->user()->isTutor()) {
             return redirect()->route('tutor.dashboard');
         }
         return redirect()->route('parent.dashboard');
-    });
+    })->name('dashboard');
 
     // 2. Parent Dashboard
     Route::get('/parent/dashboard', function () { 
