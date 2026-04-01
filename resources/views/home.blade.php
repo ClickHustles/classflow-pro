@@ -33,14 +33,15 @@
 </head>
 <body class="bg-brand-cream text-brand-slate antialiased selection:bg-brand-red selection:text-white overflow-x-hidden">
 
-    <header class="fixed top-0 inset-x-0 w-full bg-white/90 backdrop-blur-md border-b border-gray-200 z-50">
+    <header x-data="{ mobileMenuOpen: false }" class="fixed top-0 inset-x-0 w-full bg-white/90 backdrop-blur-md border-b border-gray-200 z-50">
         <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
-            <a href="/" class="text-2xl font-bold tracking-tight text-brand-slate flex items-center gap-2">
+            
+            <a href="/" class="text-2xl font-bold tracking-tight text-brand-slate flex items-center gap-2 relative z-10">
                 <svg class="w-8 h-8 text-brand-green" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
                 ClassFlow<span class="text-brand-red">Pro</span>
             </a>
             
-            <nav class="hidden md:flex items-center gap-8">
+            <nav class="hidden md:flex items-center gap-8 relative z-10">
                 <a href="#how-it-works" class="font-medium hover:text-brand-red transition-colors">How it Works</a>
                 <a href="#subjects" class="font-medium hover:text-brand-red transition-colors">Subjects</a>
                 <a href="{{ route('teach') }}" class="font-medium text-brand-green hover:text-brand-red transition-colors">Apply to Teach</a>
@@ -56,6 +57,36 @@
                     @endauth
                 </div>
             </nav>
+
+            <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden p-2 text-brand-slate focus:outline-none relative z-10">
+                <svg x-show="!mobileMenuOpen" class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                <svg x-show="mobileMenuOpen" style="display:none;" class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+
+        <div x-show="mobileMenuOpen" 
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0 -translate-y-4"
+             x-transition:enter-end="opacity-100 translate-y-0"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100 translate-y-0"
+             x-transition:leave-end="opacity-0 -translate-y-4"
+             style="display: none;"
+             class="md:hidden absolute top-20 inset-x-0 bg-white border-b border-gray-200 shadow-2xl">
+            <div class="px-6 py-6 space-y-4 flex flex-col">
+                <a @click="mobileMenuOpen = false" href="#how-it-works" class="font-bold text-brand-slate hover:text-brand-red transition-colors text-lg">How it Works</a>
+                <a @click="mobileMenuOpen = false" href="#subjects" class="font-bold text-brand-slate hover:text-brand-red transition-colors text-lg">Subjects</a>
+                <a href="{{ route('teach') }}" class="font-bold text-brand-green hover:text-brand-red transition-colors text-lg">Apply to Teach</a>
+                <hr class="border-gray-100 my-4">
+                @auth
+                    <a href="{{ url('/dashboard') }}" class="font-bold text-brand-slate hover:text-brand-red transition-colors text-lg">Dashboard</a>
+                @else
+                    <a href="{{ route('login') }}" class="font-bold text-brand-slate hover:text-brand-red transition-colors text-lg">Log in</a>
+                    <a href="{{ route('search') }}" class="mt-4 w-full py-4 rounded-xl bg-brand-slate text-white font-bold hover:bg-gray-800 transition-all shadow-md text-center text-lg">
+                        Find a Tutor
+                    </a>
+                @endauth
+            </div>
         </div>
     </header>
 
@@ -72,7 +103,7 @@
                 Connect with professional educators, test prep coaches, and specialists. <strong class="text-brand-slate">No agency markups</strong>—just great teaching.
             </p>
 
-            <div x-data="{ subjectMenuOpen: false, selectedSubject: '' }" class="bg-white p-3 rounded-2xl md:rounded-full shadow-xl border border-gray-200 max-w-5xl mx-auto flex flex-col md:flex-row gap-3 relative z-50 animate-fade-in-up">
+            <div x-data="{ subjectMenuOpen: false, selectedSubject: '' }" class="bg-white p-3 rounded-2xl md:rounded-full shadow-xl border border-gray-200 max-w-5xl mx-auto flex flex-col md:flex-row gap-3 relative z-40 animate-fade-in-up">
                 
                 <div class="flex-1 relative">
                     <div @click="subjectMenuOpen = !subjectMenuOpen" @click.away="subjectMenuOpen = false" class="flex items-center px-4 py-3 md:border-r border-gray-100 cursor-pointer group">
