@@ -12,48 +12,45 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             
-            // 1. HERO & SEO
-            $table->string('role_title')->nullable(); // Primary Subject/Role
+            // 1 & 9. HERO, SEO & SERVICE AREA
+            $table->string('role_title')->nullable(); // e.g. "Algebra Specialist"
             $table->string('value_prop', 120)->nullable();
             $table->string('primary_city')->nullable();
             $table->string('primary_state')->nullable();
-            $table->json('secondary_areas')->nullable(); // Multi-select cities
-            $table->json('grade_levels')->nullable(); // Multi-select
-            
+            $table->json('secondary_cities')->nullable();
+            $table->json('zip_codes')->nullable();
+            $table->integer('travel_radius')->default(0);
+            $table->json('grade_levels')->nullable(); 
+
             // 2. ABOUT (E-E-A-T)
-            $table->text('bio_professional')->nullable();
+            $table->text('bio_pro')->nullable();
             $table->text('philosophy')->nullable();
-            $table->text('student_expectations')->nullable();
-            $table->text('parent_expectations')->nullable();
-            $table->json('teaching_styles')->nullable(); // Multi-select
-            $table->json('learning_needs_exp')->nullable(); // ADHD, Dyslexia, etc.
+            $table->text('expect_student')->nullable();
+            $table->text('expect_parent')->nullable();
+            $table->json('teaching_styles')->nullable();
+            $table->json('learning_needs')->nullable();
 
             // 3. SUBJECTS & SKILLS
             $table->json('subjects_primary')->nullable();
             $table->json('subjects_secondary')->nullable();
-            $table->json('test_prep')->nullable();
-            $table->json('academic_skills')->nullable(); // Study skills, etc.
+            $table->json('academic_skills')->nullable();
 
             // 4. QUALIFICATIONS
             $table->string('highest_degree')->nullable();
             $table->string('major')->nullable();
             $table->integer('years_experience')->default(0);
             $table->json('languages')->nullable();
-            
-            // 5. RATES & POLICIES
-            $table->integer('rate_online_cents')->nullable();
-            $table->integer('rate_in_person_cents')->nullable();
-            $table->integer('travel_fee_cents')->default(0);
-            $table->text('cancellation_policy')->nullable();
+            $table->boolean('is_verified')->default(false);
 
-            // 9. SERVICE AREA (Local SEO)
-            $table->json('zip_codes')->nullable();
-            $table->integer('travel_radius_miles')->default(0);
-            $table->boolean('offers_online')->default(true);
-            $table->boolean('offers_in_person')->default(false);
+            // 5. RATES & POLICIES (Stored in Cents)
+            $table->integer('rate_online')->nullable();
+            $table->integer('rate_in_person')->nullable();
+            $table->integer('fee_travel')->default(0);
+            $table->integer('fee_assessment')->default(0);
+            $table->text('policy_cancellation')->nullable();
 
-            // 10. FAQ & CUSTOM
-            $table->json('faqs')->nullable(); // Structured Q&A
+            // 10. FAQ
+            $table->json('faqs')->nullable();
             
             $table->timestamps();
         });
