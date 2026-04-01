@@ -38,8 +38,8 @@ Route::get('/parent/dashboard', function () { return 'Parent Dashboard'; })->nam
 | Authentication (Temporary Stubs)
 |--------------------------------------------------------------------------
 */
-Route::get('/login', function () { return 'Login Page Coming Soon'; })->name('login');
-Route::get('/register', function () { return 'Registration Page Coming Soon'; })->name('register');
+Route::get('/login', function () { return view('auth.login'); })->name('login');
+Route::get('/register', function () { return view('auth.register'); })->name('register');
 Route::get('/password/forgot', function () { return 'Forgot Password Page'; })->name('password.request');
 Route::get('/password/reset/{token}', function ($token) { return 'Reset Password Page'; })->name('password.reset');
 
