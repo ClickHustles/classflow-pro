@@ -4,7 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Tutor\ProfileController;
 use App\Http\Controllers\Tutor\OnboardingController;
-use App\Http\Controllers\PublicTutorController; // New Controller for Storefront
+use App\Http\Controllers\PublicTutorController;
+use App\Http\Controllers\SearchController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,18 +25,16 @@ Route::get('/blog', function () { return view('marketing.blog'); })->name('blog'
 | Parent / Student Journey (The Marketplace)
 |--------------------------------------------------------------------------
 */
-Route::get('/search', function () { return view('search'); })->name('search');
+// Dynamic Search Engine
+Route::get('/search', [SearchController::class, 'index'])->name('search');
 
-// Use a real controller for the Public Profile to handle SEO & Schema auto-generation
+// High-Conversion Public Storefront
 Route::get('/tutors/{slug}', [PublicTutorController::class, 'show'])->name('tutor.profile.public');
 
+// Booking Flow
 Route::get('/booking/{tutor}/{slot}', function ($tutor, $slot) { 
     return view('booking.checkout', compact('tutor', 'slot')); 
 })->name('booking.flow');
-
-Route::middleware(['auth'])->group(function() {
-    Route::get('/parent/dashboard', function () { return view('parent.dashboard'); })->name('parent.dashboard');
-});
 
 /*
 |--------------------------------------------------------------------------
@@ -51,48 +50,58 @@ Route::get('/password/reset/{token}', function ($token) { return view('auth.pass
 
 /*
 |--------------------------------------------------------------------------
-| Tutor Dashboard & Management (Protected & Role-Checked)
+| Authenticated User Routing (Tutors, Parents, Admins)
 |--------------------------------------------------------------------------
 */
-// Note: I'm assuming you have or will have a 'role:tutor' middleware for extra security
-Route::middleware(['auth'])->prefix('tutor')->name('tutor.')->group(function () {
-    
-    Route::get('/dashboard', function () { return view('dashboard'); })->name('dashboard');
-    
-    // --- ADVANCED ONBOARDING WIZARD ---
-    Route::get('/onboarding', [OnboardingController::class, 'show'])->name('onboarding');
-    Route::post('/onboarding/save', [OnboardingController::class, 'update'])->name('onboarding.save');
-    
-    Route::get('/stripe/connect', function () { return view('tutor.stripe'); })->name('stripe.connect');
-    
-    // DYNAMIC PROFILE MANAGEMENT (For editing AFTER onboarding is done)
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    
-    Route::get('/calendar', function () { return view('tutor.calendar'); })->name('calendar');
-    Route::get('/sessions', function () { return view('tutor.sessions'); })->name('sessions');
-    Route::get('/earnings', function () { return view('tutor.earnings'); })->name('earnings');
-    Route::get('/reviews', function () { return view('tutor.reviews'); })->name('reviews');
-});
+Route::middleware(['auth'])->group(function() {
 
-// Smart redirect: if they are logged in as a tutor, send them to tutor.dashboard
-Route::get('/dashboard', function () {
-    if (auth()->check() && auth()->user()->isTutor()) {
-        return redirect()->route('tutor.dashboard');
-    }
-    return redirect()->route('parent.dashboard');
+    // 1. Smart Dashboard Redirect
+    Route::get('/dashboard', function () {
+        if (auth()->user()->isTutor()) {
+            return redirect()->route('tutor.dashboard');
+        }
+        return redirect()->route('parent.dashboard');
+    });
+
+    // 2. Parent Dashboard
+    Route::get('/parent/dashboard', function () { 
+        return view('parent.dashboard'); 
+    })->name('parent.dashboard');
+
+    // 3. Tutor Dashboard & Management
+    Route::prefix('tutor')->name('tutor.')->group(function () {
+        
+        Route::get('/dashboard', function () { return view('dashboard'); })->name('dashboard');
+        
+        // --- ADVANCED ONBOARDING WIZARD ---
+        Route::get('/onboarding', [OnboardingController::class, 'show'])->name('onboarding');
+        Route::post('/onboarding/save', [OnboardingController::class, 'update'])->name('onboarding.save');
+        
+        Route::get('/stripe/connect', function () { return view('tutor.stripe'); })->name('stripe.connect');
+        
+        // DYNAMIC PROFILE MANAGEMENT
+        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+        
+        Route::get('/calendar', function () { return view('tutor.calendar'); })->name('calendar');
+        Route::get('/sessions', function () { return view('tutor.sessions'); })->name('sessions');
+        Route::get('/earnings', function () { return view('tutor.earnings'); })->name('earnings');
+        Route::get('/reviews', function () { return view('tutor.reviews'); })->name('reviews');
+    });
+
+    // 4. Admin Panel
+    Route::prefix('admin')->name('admin.')->group(function () {
+        Route::get('/', function () { return view('admin.dashboard'); })->name('dashboard');
+        Route::get('/tutors', function () { return view('admin.tutors.index'); })->name('tutors');
+    });
+
 });
 
 /*
 |--------------------------------------------------------------------------
-| Admin & System
+| System, Legal & Webhooks
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/', function () { return view('admin.dashboard'); })->name('dashboard');
-    Route::get('/tutors', function () { return view('admin.tutors.index'); })->name('tutors');
-});
-
 Route::get('/terms', function () { return view('legal.terms'); })->name('terms');
 Route::get('/privacy', function () { return view('legal.privacy'); })->name('privacy');
 Route::post('/stripe/webhook', function () { return response('Webhook Handled', 200); })->name('stripe.webhook');

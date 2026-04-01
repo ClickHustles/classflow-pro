@@ -3,7 +3,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Sarah Mitchell | Math Tutor | ClassFlow Pro</title>
+    <title>{{ $tutor->name }} | {{ $tutor->profile->role_title ?? 'Expert Tutor' }} | ClassFlow Pro</title>
+    
+    <script type="application/ld+json">
+        {!! $schema !!}
+    </script>
+
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700,800" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
@@ -41,21 +46,23 @@
                 
                 <div class="flex flex-col md:flex-row gap-8 items-start">
                     <div class="w-32 h-32 md:w-48 md:h-48 rounded-3xl bg-brand-lightgreen overflow-hidden flex-shrink-0 shadow-inner">
-                        <svg class="w-full h-full text-brand-green p-8 opacity-40" fill="currentColor" viewBox="0 0 20 20"><path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"></path></svg>
+                        <img src="{{ $tutor->getFirstMediaUrl('avatar') }}" alt="{{ $tutor->name }}" class="w-full h-full object-cover">
                     </div>
+                    
                     <div class="space-y-4">
+                        @if($tutor->profile->is_verified)
                         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-lightgreen text-brand-green text-xs font-bold uppercase tracking-wider">
                             <span class="w-2 h-2 rounded-full bg-brand-green animate-pulse"></span> Verified Professional
                         </div>
-                        <h1 class="text-4xl md:text-5xl font-black tracking-tight text-brand-slate">Sarah Mitchell, M.Ed</h1>
-                        <p class="text-xl text-gray-500 font-medium leading-relaxed">High School Mathematics & SAT Prep Specialist with 12 years of classroom experience.</p>
+                        @endif
+                        
+                        <h1 class="text-4xl md:text-5xl font-black tracking-tight text-brand-slate">{{ $tutor->name }}</h1>
+                        <p class="text-xl text-gray-500 font-medium leading-relaxed">{{ $tutor->profile->value_prop }}</p>
+                        
                         <div class="flex items-center gap-6">
-                            <div class="flex items-center gap-1 text-amber-400 font-bold">
-                                ★★★★★ <span class="text-brand-slate ml-1">4.9</span> <span class="text-gray-400 font-medium">(42 Reviews)</span>
-                            </div>
                             <div class="flex items-center gap-2 text-gray-500 font-medium">
                                 <svg class="w-5 h-5 text-brand-green" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
-                                Austin, TX (Online & In-Person)
+                                {{ $tutor->profile->primary_city }}, {{ $tutor->profile->primary_state }}
                             </div>
                         </div>
                     </div>
@@ -66,7 +73,7 @@
                         <span class="w-8 h-1 bg-brand-green rounded-full"></span> Subjects
                     </h2>
                     <div class="flex flex-wrap gap-3">
-                        @foreach(['Algebra I & II', 'Geometry', 'Calculus AB/BC', 'SAT Math', 'ACT Science', 'AP Statistics'] as $tag)
+                        @foreach($tutor->profile->subjects_primary ?? [] as $tag)
                         <span class="px-4 py-2 bg-white border border-gray-200 rounded-xl text-brand-slate font-bold shadow-sm">{{ $tag }}</span>
                         @endforeach
                     </div>
@@ -74,22 +81,12 @@
 
                 <div class="prose prose-lg text-gray-600 max-w-none">
                     <h2 class="text-2xl font-bold text-brand-slate mb-4">About Me</h2>
-                    <p>I believe that every student has a "Math Brain"—they just haven't been shown how to use it yet. My teaching philosophy is built on breaking down complex, intimidating concepts into simple, repeatable patterns.</p>
-                    <p>Whether we are tackling the SAT or preparing for an AP Calculus exam, my goal is to build the student's confidence alongside their skills. I provide custom worksheets, digital whiteboarding sessions, and progress reports after every meeting.</p>
+                    <div class="whitespace-pre-line">{{ $tutor->profile->bio_pro }}</div>
+                    
+                    <h2 class="text-2xl font-bold text-brand-slate mt-8 mb-4">Teaching Philosophy</h2>
+                    <p>{{ $tutor->profile->philosophy }}</p>
                 </div>
 
-                <div class="pt-12 border-t border-gray-100">
-                    <h2 class="text-2xl font-bold mb-8 text-brand-slate">What Parents Are Saying</h2>
-                    <div class="space-y-8">
-                        <div class="p-6 bg-white rounded-3xl border border-gray-100 shadow-sm">
-                            <div class="flex justify-between mb-4">
-                                <span class="font-bold">Michelle R. <span class="text-gray-400 font-normal">for Algebra II</span></span>
-                                <span class="text-amber-400">★★★★★</span>
-                            </div>
-                            <p class="text-gray-600 italic">"Sarah is a miracle worker. My son went from a D+ to an A- in just three months. She makes the material so approachable."</p>
-                        </div>
-                    </div>
-                </div>
             </div>
 
             <div class="w-full lg:w-96">
@@ -99,30 +96,20 @@
                         
                         <div class="flex justify-between items-end mb-8">
                             <div>
-                                <span class="text-4xl font-black text-brand-slate">$65</span>
+                                <span class="text-4xl font-black text-brand-slate">${{ $tutor->profile->rate_online }}</span>
                                 <span class="text-gray-400 font-bold ml-1">/ hour</span>
                             </div>
                             <div class="text-right">
                                 <span class="block text-xs font-bold text-brand-green uppercase tracking-widest">Available</span>
-                                <span class="text-xs font-medium text-gray-500 italic">No hidden fees</span>
+                                <span class="text-xs font-medium text-gray-500 italic">No middleman fees</span>
                             </div>
                         </div>
 
-                        <div class="space-y-4 mb-8">
-                            <label class="block text-sm font-bold text-gray-700 uppercase tracking-wider">Select a Date</label>
-                            <div class="grid grid-cols-7 gap-2 text-center text-xs font-bold">
-                                <div class="text-gray-400">M</div><div class="text-gray-400">T</div><div class="text-gray-400">W</div><div class="text-gray-400">T</div><div class="text-gray-400">F</div><div class="text-gray-400">S</div><div class="text-gray-400">S</div>
-                                @foreach(range(1, 14) as $day)
-                                <button class="h-10 w-full flex items-center justify-center rounded-lg border border-gray-100 hover:border-brand-green hover:text-brand-green transition-all">{{ 10 + $day }}</button>
-                                @endforeach
-                            </div>
-                        </div>
-
-                        <a href="{{ route('booking.flow', ['tutor' => 'sarah-mitchell', 'slot' => 'monday-4pm']) }}" class="block text-center w-full py-5 bg-brand-red text-white font-black text-xl rounded-2xl shadow-lg shadow-brand-red/30 hover:bg-opacity-90 hover:-translate-y-1 transition-all active:scale-95 mb-4">
-    Book Session
-</a>
+                        <a href="{{ route('booking.flow', ['tutor' => $tutor->slug, 'slot' => 'initial-consult']) }}" class="block text-center w-full py-5 bg-brand-red text-white font-black text-xl rounded-2xl shadow-lg shadow-brand-red/30 hover:bg-opacity-90 hover:-translate-y-1 transition-all active:scale-95 mb-4">
+                            Book Session
+                        </a>
                         
-                        <p class="text-center text-xs text-gray-400 font-medium">You won't be charged until the session is confirmed.</p>
+                        <p class="text-center text-xs text-gray-400 font-medium">Supporting Independent Educators</p>
                     </div>
 
                     <div class="bg-brand-lightgreen rounded-2xl p-6 border border-brand-green/10">
@@ -131,7 +118,7 @@
                             The ClassFlow Promise
                         </h4>
                         <p class="text-xs text-brand-slate/70 leading-relaxed">
-                            By booking through ClassFlow Pro, you are supporting independent educators. Tutors keep 100% of their rate, ensuring you get the best educational value.
+                            {{ $tutor->name }} keeps 100% of the session rate. We don't take a cut of their hard work, and you don't pay "service fees" just for booking.
                         </p>
                     </div>
                 </div>

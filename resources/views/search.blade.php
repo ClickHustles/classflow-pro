@@ -39,96 +39,102 @@
     <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         <div class="flex flex-col md:flex-row gap-8">
             
-            <aside class="hidden md:block w-64 flex-shrink-0 space-y-8">
-                <div>
-                    <h3 class="font-bold text-lg mb-4">Subject</h3>
-                    <div class="space-y-3">
-                        @foreach(['Math', 'Reading', 'SAT/ACT', 'Science', 'Music'] as $sub)
-                        <label class="flex items-center gap-3 cursor-pointer group">
-                            <input type="checkbox" class="w-5 h-5 rounded border-gray-300 text-brand-green focus:ring-brand-green">
-                            <span class="text-gray-600 group-hover:text-brand-slate transition-colors">{{ $sub }}</span>
-                        </label>
-                        @endforeach
+            <aside :class="mobileFilters ? 'block' : 'hidden'" class="md:block w-full md:w-64 flex-shrink-0 space-y-8 bg-white md:bg-transparent p-6 md:p-0 rounded-3xl md:rounded-none">
+                <form action="{{ route('search') }}" method="GET" class="space-y-8">
+                    <div>
+                        <h3 class="font-bold text-lg mb-4">Subject</h3>
+                        <div class="space-y-3">
+                            @foreach(['Math', 'Reading', 'SAT/ACT', 'Science', 'Music'] as $sub)
+                            <label class="flex items-center gap-3 cursor-pointer group">
+                                <input type="checkbox" name="subject" value="{{ $sub }}" {{ request('subject') == $sub ? 'checked' : '' }} class="w-5 h-5 rounded border-gray-300 text-brand-green focus:ring-brand-green">
+                                <span class="text-gray-600 group-hover:text-brand-slate transition-colors">{{ $sub }}</span>
+                            </label>
+                            @endforeach
+                        </div>
                     </div>
-                </div>
 
-                <div>
-                    <h3 class="font-bold text-lg mb-4">Price Range</h3>
-                    <input type="range" class="w-full accent-brand-green" min="20" max="200" step="10">
-                    <div class="flex justify-between text-xs font-bold text-gray-400 mt-2">
-                        <span>$20/hr</span>
-                        <span>$200/hr</span>
+                    <div>
+                        <h3 class="font-bold text-lg mb-4">Max Price: $<span x-data="{ val: {{ request('max_rate', 200) }} }" x-text="val"></span>/hr</h3>
+                        <input type="range" name="max_rate" class="w-full accent-brand-green" min="20" max="200" step="10" value="{{ request('max_rate', 200) }}" @input="val = $el.value">
+                        <div class="flex justify-between text-xs font-bold text-gray-400 mt-2">
+                            <span>$20/hr</span>
+                            <span>$200/hr</span>
+                        </div>
                     </div>
-                </div>
 
-                <div class="pt-6 border-t border-gray-200">
-                    <h3 class="font-bold text-lg mb-4">Tutor Type</h3>
-                    <div class="space-y-3">
-                        <label class="flex items-center gap-3"><input type="radio" name="type" class="text-brand-green"> <span>In-Person</span></label>
-                        <label class="flex items-center gap-3"><input type="radio" name="type" class="text-brand-green"> <span>Online Only</span></label>
-                    </div>
-                </div>
+                    <button type="submit" class="w-full py-3 bg-brand-slate text-white font-bold rounded-xl hover:bg-black transition-all">Apply Filters</button>
+                </form>
             </aside>
 
             <div class="flex-1">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
                     <div>
-                        <h1 class="text-2xl font-bold">Tutors for <span class="text-brand-green">"Algebra"</span></h1>
-                        <p class="text-gray-500 text-sm">Showing 42 tutors near you</p>
+                        <h1 class="text-2xl font-bold">
+                            @if(request('subject'))
+                                Tutors for <span class="text-brand-green">"{{ request('subject') }}"</span>
+                            @else
+                                All <span class="text-brand-green">Available</span> Tutors
+                            @endif
+                        </h1>
+                        <p class="text-gray-500 text-sm">Showing {{ $tutors->total() }} tutors found</p>
                     </div>
-                    <select class="bg-white border border-gray-200 rounded-lg px-4 py-2 text-sm font-bold outline-none">
-                        <option>Sort by: Recommended</option>
-                        <option>Sort by: Lowest Price</option>
-                        <option>Sort by: Highest Rating</option>
-                    </select>
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    @foreach(range(1, 4) as $index)
+                    @forelse($tutors as $tutor)
                     <div class="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
                         <div class="flex gap-4">
                             <div class="w-20 h-20 rounded-2xl bg-brand-lightgreen flex-shrink-0 overflow-hidden relative">
+                                <img src="{{ $tutor->getFirstMediaUrl('avatar') }}" class="w-full h-full object-cover">
                                 <div class="absolute inset-0 bg-gradient-to-tr from-brand-green/20 to-transparent"></div>
-                                <svg class="w-full h-full text-brand-green p-4 opacity-50" fill="currentColor" viewBox="0 0 20 20"><path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"></path></svg>
                             </div>
                             
                             <div class="flex-1">
                                 <div class="flex justify-between items-start">
                                     <div>
-                                        <h3 class="font-bold text-lg group-hover:text-brand-green transition-colors">Sarah Mitchell, M.Ed</h3>
+                                        <h3 class="font-bold text-lg group-hover:text-brand-green transition-colors">{{ $tutor->name }}</h3>
                                         <div class="flex items-center gap-1 text-sm font-bold text-amber-400">
                                             <span>★★★★★</span>
                                             <span class="text-gray-400 ml-1">4.9 (42 reviews)</span>
                                         </div>
                                     </div>
                                     <div class="text-right">
-                                        <span class="block text-xl font-black text-brand-slate">$65</span>
+                                        <span class="block text-xl font-black text-brand-slate">${{ number_format($tutor->profile->rate_online) }}</span>
                                         <span class="text-[10px] uppercase font-bold text-gray-400 tracking-widest">per hour</span>
                                     </div>
                                 </div>
                                 
                                 <p class="text-sm text-gray-600 mt-3 line-clamp-2">
-                                    High School Math specialist with 10 years experience. I make Calculus feel like basic addition.
+                                    {{ $tutor->profile->value_prop }}
                                 </p>
 
                                 <div class="mt-4 flex flex-wrap gap-2">
-                                    <span class="px-2 py-1 bg-brand-lightgreen text-brand-green text-[10px] font-bold rounded uppercase">Algebra</span>
-                                    <span class="px-2 py-1 bg-brand-lightgreen text-brand-green text-[10px] font-bold rounded uppercase">SAT Prep</span>
-                                    <span class="px-2 py-1 bg-gray-100 text-gray-500 text-[10px] font-bold rounded uppercase">Online</span>
+                                    @foreach(array_slice($tutor->profile->subjects_primary ?? [], 0, 3) as $subject)
+                                        <span class="px-2 py-1 bg-brand-lightgreen text-brand-green text-[10px] font-bold rounded uppercase">{{ $subject }}</span>
+                                    @endforeach
                                 </div>
                             </div>
                         </div>
                         <div class="mt-6 pt-6 border-t border-gray-50 flex items-center justify-between">
                             <span class="text-xs font-bold text-brand-green flex items-center gap-1">
                                 <span class="w-2 h-2 rounded-full bg-brand-green animate-pulse"></span>
-                                Next available: Today, 4:00 PM
+                                Online & In-Person
                             </span>
-                            <a href="/tutors/sarah-mitchell" class="px-5 py-2 bg-brand-slate text-white text-sm font-bold rounded-xl hover:bg-brand-red transition-all">
+                            <a href="{{ route('tutor.profile.public', $tutor->slug) }}" class="px-5 py-2 bg-brand-slate text-white text-sm font-bold rounded-xl hover:bg-brand-red transition-all">
                                 View Profile
                             </a>
                         </div>
                     </div>
-                    @endforeach
+                    @empty
+                    <div class="col-span-full py-20 text-center bg-white rounded-3xl border border-dashed border-gray-200">
+                        <p class="text-gray-500 font-bold">No tutors found matching your criteria.</p>
+                        <a href="{{ route('search') }}" class="text-brand-green font-bold underline">Clear all filters</a>
+                    </div>
+                    @endforelse
+                </div>
+
+                <div class="mt-12">
+                    {{ $tutors->links() }}
                 </div>
             </div>
         </div>
