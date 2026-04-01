@@ -91,7 +91,9 @@ Route::get('/dashboard', function () {
 |--------------------------------------------------------------------------
 */
 Route::prefix('admin')->name('admin.')->group(function () {
-    Route::get('/', function () { return 'Admin Dashboard'; })->name('dashboard');
+    Route::get('/', function () { 
+    return view('admin.dashboard'); 
+})->name('dashboard');
     Route::get('/tutors', function () { return 'Admin: Tutor Management'; })->name('tutors');
     Route::get('/bookings', function () { return 'Admin: Booking Logs'; })->name('bookings');
     Route::get('/reviews', function () { return 'Admin: Reviews Moderation'; })->name('reviews');
