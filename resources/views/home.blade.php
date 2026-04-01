@@ -9,6 +9,7 @@
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700,800" rel="stylesheet" />
 
     <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -71,17 +72,93 @@
                 Connect with professional educators, test prep coaches, and specialists. <strong class="text-brand-slate">No agency markups</strong>—just great teaching.
             </p>
 
-            <div class="bg-white p-3 rounded-2xl md:rounded-full shadow-xl border border-gray-200 max-w-4xl mx-auto flex flex-col md:flex-row gap-3 relative z-20">
-                <div class="flex-1 flex items-center px-4 py-2 md:border-r border-gray-200">
-                    <svg class="w-6 h-6 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                    <input type="text" placeholder="What do you want to learn? (e.g. Algebra)" class="w-full bg-transparent border-none focus:ring-0 text-brand-slate placeholder-gray-400 outline-none text-lg">
+            <div x-data="{ subjectMenuOpen: false, selectedSubject: '' }" class="bg-white p-3 rounded-2xl md:rounded-full shadow-xl border border-gray-200 max-w-5xl mx-auto flex flex-col md:flex-row gap-3 relative z-50 animate-fade-in-up">
+                
+                <div class="flex-1 relative">
+                    <div @click="subjectMenuOpen = !subjectMenuOpen" @click.away="subjectMenuOpen = false" class="flex items-center px-4 py-3 md:border-r border-gray-100 cursor-pointer group">
+                        <div class="w-10 h-10 bg-brand-lightgreen rounded-full flex items-center justify-center text-brand-green mr-3 group-hover:bg-brand-green group-hover:text-white transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                        </div>
+                        <div class="flex-1 text-left">
+                            <span class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-0.5">Subject</span>
+                            <input x-model="selectedSubject" readonly type="text" placeholder="What do you want to learn?" class="w-full bg-transparent border-none focus:ring-0 text-brand-slate font-medium placeholder-gray-400 outline-none text-lg cursor-pointer truncate">
+                        </div>
+                    </div>
+
+                    <div x-show="subjectMenuOpen" 
+                         x-transition:enter="transition ease-out duration-200"
+                         x-transition:enter-start="opacity-0 translate-y-4"
+                         x-transition:enter-end="opacity-100 translate-y-0"
+                         x-transition:leave="transition ease-in duration-150"
+                         x-transition:leave-start="opacity-100 translate-y-0"
+                         x-transition:leave-end="opacity-0 translate-y-4"
+                         class="absolute top-full left-0 mt-4 w-full md:w-[600px] bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden" style="display: none;">
+                        
+                        <div class="p-6 bg-brand-lightgreen border-b border-gray-100">
+                            <h3 class="font-bold text-brand-slate">Popular Categories</h3>
+                        </div>
+                        
+                        <div class="p-6 grid grid-cols-1 sm:grid-cols-2 gap-8">
+                            <div>
+                                <h4 class="text-xs font-black text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-blue-500"></span> Math & Science
+                               </h4>
+                                <ul class="space-y-3">
+                                    <li><button @click="selectedSubject = 'Algebra'; subjectMenuOpen = false" class="text-brand-slate hover:text-brand-green font-medium transition-colors w-full text-left">Algebra & Geometry</button></li>
+                                    <li><button @click="selectedSubject = 'Calculus'; subjectMenuOpen = false" class="text-brand-slate hover:text-brand-green font-medium transition-colors w-full text-left">Calculus & Stats</button></li>
+                                    <li><button @click="selectedSubject = 'Chemistry'; subjectMenuOpen = false" class="text-brand-slate hover:text-brand-green font-medium transition-colors w-full text-left">Chemistry & Physics</button></li>
+                                </ul>
+                            </div>
+                            
+                            <div>
+                                <h4 class="text-xs font-black text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-brand-red"></span> Test Prep
+                                </h4>
+                                <ul class="space-y-3">
+                                    <li><button @click="selectedSubject = 'SAT / ACT'; subjectMenuOpen = false" class="text-brand-slate hover:text-brand-green font-medium transition-colors w-full text-left">SAT / ACT Prep</button></li>
+                                    <li><button @click="selectedSubject = 'AP Exams'; subjectMenuOpen = false" class="text-brand-slate hover:text-brand-green font-medium transition-colors w-full text-left">AP Exams</button></li>
+                                    <li><button @click="selectedSubject = 'College Admissions'; subjectMenuOpen = false" class="text-brand-slate hover:text-brand-green font-medium transition-colors w-full text-left">College Admissions</button></li>
+                                </ul>
+                            </div>
+
+                            <div>
+                                <h4 class="text-xs font-black text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-amber-500"></span> Language & Arts
+                                </h4>
+                                <ul class="space-y-3">
+                                    <li><button @click="selectedSubject = 'Spanish'; subjectMenuOpen = false" class="text-brand-slate hover:text-brand-green font-medium transition-colors w-full text-left">Spanish & French</button></li>
+                                    <li><button @click="selectedSubject = 'ESL'; subjectMenuOpen = false" class="text-brand-slate hover:text-brand-green font-medium transition-colors w-full text-left">ESL / English</button></li>
+                                    <li><button @click="selectedSubject = 'Music Theory'; subjectMenuOpen = false" class="text-brand-slate hover:text-brand-green font-medium transition-colors w-full text-left">Piano & Music Theory</button></li>
+                                </ul>
+                            </div>
+
+                            <div>
+                                <h4 class="text-xs font-black text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-purple-500"></span> Special Focus
+                                </h4>
+                                <ul class="space-y-3">
+                                    <li><button @click="selectedSubject = 'Special Education'; subjectMenuOpen = false" class="text-brand-slate hover:text-brand-green font-medium transition-colors w-full text-left">Special Education</button></li>
+                                    <li><button @click="selectedSubject = 'Dyslexia Support'; subjectMenuOpen = false" class="text-brand-slate hover:text-brand-green font-medium transition-colors w-full text-left">Dyslexia Support</button></li>
+                                    <li><button @click="selectedSubject = 'Study Skills'; subjectMenuOpen = false" class="text-brand-slate hover:text-brand-green font-medium transition-colors w-full text-left">ADHD & Study Skills</button></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="flex-1 flex items-center px-4 py-2">
-                    <svg class="w-6 h-6 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                    <input type="text" placeholder="Zip code or Online" class="w-full bg-transparent border-none focus:ring-0 text-brand-slate placeholder-gray-400 outline-none text-lg">
+
+                <div class="flex-1 flex items-center px-4 py-3">
+                    <div class="w-10 h-10 bg-gray-50 rounded-full flex items-center justify-center text-gray-400 mr-3">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    </div>
+                    <div class="flex-1 text-left">
+                        <span class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-0.5">Location</span>
+                        <input type="text" placeholder="Zip code or 'Online'" class="w-full bg-transparent border-none focus:ring-0 text-brand-slate font-medium placeholder-gray-400 outline-none text-lg">
+                    </div>
                 </div>
-                <a href="{{ route('search') }}" class="bg-brand-red text-white font-bold text-lg rounded-xl md:rounded-full px-8 py-4 hover:bg-opacity-90 transition-colors shadow-md flex items-center justify-center whitespace-nowrap">
-                    Search Tutors
+
+                <a href="{{ route('search') }}" class="bg-brand-red text-white font-bold text-lg rounded-xl md:rounded-full px-8 py-4 hover:bg-opacity-90 transition-all shadow-md flex items-center justify-center whitespace-nowrap hover:shadow-xl hover:-translate-y-0.5">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    Search
                 </a>
             </div>
         </div>
