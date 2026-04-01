@@ -118,9 +118,9 @@
                             </div>
                         </div>
 
-                        <button class="w-full py-5 bg-brand-red text-white font-black text-xl rounded-2xl shadow-lg shadow-brand-red/30 hover:bg-opacity-90 hover:-translate-y-1 transition-all active:scale-95 mb-4">
-                            Book Session
-                        </button>
+                        <a href="{{ route('booking.flow', ['tutor' => 'sarah-mitchell', 'slot' => 'monday-4pm']) }}" class="block text-center w-full py-5 bg-brand-red text-white font-black text-xl rounded-2xl shadow-lg shadow-brand-red/30 hover:bg-opacity-90 hover:-translate-y-1 transition-all active:scale-95 mb-4">
+    Book Session
+</a>
                         
                         <p class="text-center text-xs text-gray-400 font-medium">You won't be charged until the session is confirmed.</p>
                     </div>
