@@ -34,7 +34,10 @@ Route::get('/search', function () {
 Route::get('/tutors/{slug}', function ($slug) {
     return view('tutor-profile');
 })->name('tutor.profile.public');
-Route::get('/booking/{tutor}/{slot}', function ($tutor, $slot) { return "Booking flow for {$tutor} at {$slot}"; })->name('booking.flow');
+// Find the booking.flow route and update it:
+Route::get('/booking/{tutor}/{slot}', function ($tutor, $slot) {
+    return view('booking.checkout');
+})->name('booking.flow');
 Route::get('/parent/dashboard', function () { return 'Parent Dashboard'; })->name('parent.dashboard');
 
 /*
