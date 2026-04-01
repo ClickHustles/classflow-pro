@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Route;
 */
 // The Parent/Student Homepage (Directory Teaser)
 Route::get('/', function () {
-    return 'Directory / Parent Homepage Coming Soon. Go to /teach to see the new Tutor Landing Page!';
+    return view('home');
 })->name('home');
 
 // The High-Conversion Tutor Landing Page
