@@ -65,7 +65,10 @@ Route::prefix('tutor')->name('tutor.')->group(function () {
 })->name('onboarding');
     Route::get('/stripe/connect', function () { 
     return view('tutor.stripe'); 
-})->name('stripe.connect');Route::get('/profile', function () { return 'Profile Editor'; })->name('profile.edit');
+})->name('stripe.connect');
+Route::get('/profile', function () { 
+    return view('tutor.profile'); 
+})->name('profile.edit');
     Route::get('/calendar', function () { 
     return view('tutor.calendar'); 
 })->name('calendar');
