@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Tutor\ProfileController;
+use App\Http\Controllers\Tutor\OnboardingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,7 +34,6 @@ Route::get('/parent/dashboard', function () { return 'Parent Dashboard'; })->nam
 |--------------------------------------------------------------------------
 */
 Route::get('/login', function () { return view('auth.login'); })->name('login');
-
 Route::get('/register', function () { return view('auth.register'); })->name('register');
 Route::post('/register', [RegisterController::class, 'register']);
 
@@ -45,13 +45,17 @@ Route::get('/password/reset/{token}', function ($token) { return 'Reset Password
 | Tutor Dashboard & Management
 |--------------------------------------------------------------------------
 */
-Route::prefix('tutor')->name('tutor.')->group(function () {
+Route::middleware(['auth'])->prefix('tutor')->name('tutor.')->group(function () {
     
     Route::get('/dashboard', function () { return view('dashboard'); })->name('dashboard');
-    Route::get('/onboarding', function () { return view('tutor.onboarding'); })->name('onboarding');
+    
+    // --- ADVANCED ONBOARDING WIZARD ---
+    Route::get('/onboarding', [OnboardingController::class, 'show'])->name('onboarding');
+    Route::post('/onboarding/save', [OnboardingController::class, 'update'])->name('onboarding.save');
+    
     Route::get('/stripe/connect', function () { return view('tutor.stripe'); })->name('stripe.connect');
     
-    // --> DYNAMIC PROFILE ROUTES <--
+    // DYNAMIC PROFILE MANAGEMENT
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     
@@ -61,27 +65,19 @@ Route::prefix('tutor')->name('tutor.')->group(function () {
     Route::get('/reviews', function () { return 'Reviews Management'; })->name('reviews');
 });
 
+// Shortcut redirect
 Route::get('/dashboard', function () { return redirect()->route('tutor.dashboard'); });
 
 /*
 |--------------------------------------------------------------------------
-| Admin / Internal
+| Admin & System
 |--------------------------------------------------------------------------
 */
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/', function () { return view('admin.dashboard'); })->name('dashboard');
     Route::get('/tutors', function () { return 'Admin: Tutor Management'; })->name('tutors');
-    Route::get('/bookings', function () { return 'Admin: Booking Logs'; })->name('bookings');
-    Route::get('/reviews', function () { return 'Admin: Reviews Moderation'; })->name('reviews');
 });
 
-/*
-|--------------------------------------------------------------------------
-| System & Legal
-|--------------------------------------------------------------------------
-*/
 Route::get('/terms', function () { return 'Terms of Service'; })->name('terms');
 Route::get('/privacy', function () { return 'Privacy Policy'; })->name('privacy');
-Route::get('/trust-and-safety', function () { return 'Trust & Safety Promise'; })->name('trust');
-
 Route::post('/stripe/webhook', function () { return response('Webhook Handled', 200); })->name('stripe.webhook');
