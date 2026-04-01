@@ -28,7 +28,9 @@ Route::get('/blog', function () { return 'Blog / Resources'; })->name('blog');
 | Parent / Student Journey
 |--------------------------------------------------------------------------
 */
-Route::get('/search', function () { return 'Directory Search UI'; })->name('search');
+Route::get('/search', function () {
+    return view('search');
+})->name('search');
 Route::get('/tutors/{slug}', function ($slug) { return "Public Profile for: {$slug}"; })->name('tutor.profile.public');
 Route::get('/booking/{tutor}/{slot}', function ($tutor, $slot) { return "Booking flow for {$tutor} at {$slot}"; })->name('booking.flow');
 Route::get('/parent/dashboard', function () { return 'Parent Dashboard'; })->name('parent.dashboard');
