@@ -9,7 +9,8 @@ class SearchController extends Controller
 {
     public function index(Request $request)
     {
-        $query = User::role('tutor')
+        // FIX: Changed from User::role('tutor') to User::where('role', 'tutor')
+        $query = User::where('role', 'tutor')
             ->where('is_onboarded', true)
             ->with(['profile', 'media']);
 
