@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Tutor\ProfileController;
 use App\Http\Controllers\Tutor\OnboardingController;
@@ -55,6 +56,14 @@ Route::get('/password/reset/{token}', function ($token) { return view('auth.pass
 */
 Route::middleware(['auth'])->group(function() {
 
+    // --- SECURE LOGOUT ROUTE ---
+    Route::post('/logout', function (\Illuminate\Http\Request $request) {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect('/');
+    })->name('logout');
+
     // 1. Smart Dashboard Redirect (Upgraded to handle Admins)
     Route::get('/dashboard', function () {
         $role = auth()->user()->role;
@@ -98,8 +107,8 @@ Route::middleware(['auth'])->group(function() {
 
     // 4. Admin Panel
     Route::prefix('admin')->name('admin.')->group(function () {
-        Route::get('/', function () { return view('admin.dashboard'); })->name('dashboard');
-        Route::get('/tutors', function () { return view('admin.tutors.index'); })->name('tutors');
+        Route::get('/', function () { return view('admin.dashboard'); })->name('admin.dashboard');
+        Route::get('/tutors', function () { return view('admin.tutors.index'); })->name('admin.tutors');
     });
 
 });
