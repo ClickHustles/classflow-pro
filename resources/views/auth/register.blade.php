@@ -36,34 +36,42 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
-                        <input type="text" name="first_name" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-brand-green focus:ring-2 focus:ring-brand-green/20 outline-none transition-all" placeholder="Sarah">
+                        <input type="text" name="first_name" value="{{ old('first_name') }}" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-brand-green focus:ring-2 focus:ring-brand-green/20 outline-none transition-all" placeholder="Sarah">
+                        @error('first_name') <p class="text-brand-red text-xs font-bold mt-1">{{ $message }}</p> @enderror
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
-                        <input type="text" name="last_name" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-brand-green focus:ring-2 focus:ring-brand-green/20 outline-none transition-all" placeholder="Mitchell">
+                        <input type="text" name="last_name" value="{{ old('last_name') }}" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-brand-green focus:ring-2 focus:ring-brand-green/20 outline-none transition-all" placeholder="Mitchell">
+                        @error('last_name') <p class="text-brand-red text-xs font-bold mt-1">{{ $message }}</p> @enderror
                     </div>
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                    <input type="email" name="email" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-brand-green focus:ring-2 focus:ring-brand-green/20 outline-none transition-all" placeholder="sarah@example.com">
+                    <input type="email" name="email" value="{{ old('email') }}" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-brand-green focus:ring-2 focus:ring-brand-green/20 outline-none transition-all" placeholder="sarah@example.com">
+                    @error('email') <p class="text-brand-red text-xs font-bold mt-1">{{ $message }}</p> @enderror
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
                     <input type="password" name="password" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-brand-green focus:ring-2 focus:ring-brand-green/20 outline-none transition-all" placeholder="••••••••">
+                    @error('password') <p class="text-brand-red text-xs font-bold mt-1">{{ $message }}</p> @enderror
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Primary Teaching Subject</label>
                     <select name="subject" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-brand-green focus:ring-2 focus:ring-brand-green/20 outline-none transition-all bg-white text-gray-600">
-                        <option value="Math & Sciences">Math & Sciences</option>
-                        <option value="Reading & English">Reading & English</option>
-                        <option value="Test Prep (SAT/ACT)">Test Prep (SAT/ACT)</option>
-                        <option value="Foreign Languages">Foreign Languages</option>
-                        <option value="Music & Arts">Music & Arts</option>
-                        <option value="Other">Other</option>
+                        <option value="" disabled {{ old('subject') ? '' : 'selected' }}>Select primary subject...</option>
+                        <option value="Math" {{ old('subject') == 'Math' ? 'selected' : '' }}>Math & Logic</option>
+                        <option value="Science" {{ old('subject') == 'Science' ? 'selected' : '' }}>Science & Biology</option>
+                        <option value="English" {{ old('subject') == 'English' ? 'selected' : '' }}>Reading & English</option>
+                        <option value="Test Prep" {{ old('subject') == 'Test Prep' ? 'selected' : '' }}>Test Prep (SAT/ACT)</option>
+                        <option value="Languages" {{ old('subject') == 'Languages' ? 'selected' : '' }}>Foreign Languages</option>
+                        <option value="Special Ed" {{ old('subject') == 'Special Ed' ? 'selected' : '' }}>Special Education</option>
+                        <option value="Music" {{ old('subject') == 'Music' ? 'selected' : '' }}>Music & Arts</option>
+                        <option value="Other" {{ old('subject') == 'Other' ? 'selected' : '' }}>Other</option>
                     </select>
+                    @error('subject') <p class="text-brand-red text-xs font-bold mt-1">{{ $message }}</p> @enderror
                 </div>
 
                 <button type="submit" class="w-full py-4 bg-brand-green text-white font-bold rounded-xl hover:bg-opacity-90 transition-all shadow-md mt-4">
