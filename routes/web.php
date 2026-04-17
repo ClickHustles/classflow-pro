@@ -64,9 +64,10 @@ Route::middleware(['auth'])->group(function() {
         return redirect('/');
     })->name('logout');
 
-    // 1. Smart Dashboard Redirect (Upgraded to handle Admins)
+    // 1. Smart Dashboard Redirect
     Route::get('/dashboard', function () {
-        $role = auth()->user()->role;
+        // Trim and lowercase just in case there are weird spaces in the database
+        $role = strtolower(trim(auth()->user()->role ?? 'parent'));
         
         if ($role === 'admin') {
             return redirect()->route('admin.dashboard');
@@ -105,10 +106,10 @@ Route::middleware(['auth'])->group(function() {
         Route::get('/reviews', function () { return view('tutor.reviews'); })->name('reviews');
     });
 
-    // 4. Admin Panel
+    // 4. Admin Panel (FIXED: Removed the duplicate 'admin.' naming)
     Route::prefix('admin')->name('admin.')->group(function () {
-        Route::get('/', function () { return view('admin.dashboard'); })->name('admin.dashboard');
-        Route::get('/tutors', function () { return view('admin.tutors.index'); })->name('admin.tutors');
+        Route::get('/', function () { return view('admin.dashboard'); })->name('dashboard');
+        Route::get('/tutors', function () { return view('admin.tutors.index'); })->name('tutors');
     });
 
 });
