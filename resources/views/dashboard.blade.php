@@ -18,10 +18,11 @@
             }
         }
     </script>
+    <style>[x-cloak] { display: none !important; }</style>
 </head>
 <body class="bg-gray-50 text-brand-slate antialiased min-h-screen flex flex-col">
 
-    <header class="bg-white border-b border-gray-200 sticky top-0 z-40">
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-40" x-data="{ profileOpen: false }">
         <div class="max-w-7xl mx-auto px-6 h-16 flex justify-between items-center">
             
             <div class="flex items-center gap-8">
@@ -31,7 +32,7 @@
                 </a>
                 
                 <nav class="hidden md:flex gap-6 text-sm font-bold text-gray-500">
-                    <a href="{{ route('tutor.dashboard') }}" class="text-brand-slate">Overview</a>
+                    <a href="{{ route('tutor.dashboard') }}" class="text-brand-slate border-b-2 border-brand-slate pb-1">Overview</a>
                     <a href="{{ route('tutor.calendar') }}" class="hover:text-brand-slate transition-colors">Calendar</a>
                     <a href="{{ route('tutor.earnings') }}" class="hover:text-brand-slate transition-colors">Earnings</a>
                     <a href="{{ route('tutor.profile.edit') }}" class="hover:text-brand-slate transition-colors">Profile</a>
@@ -39,10 +40,35 @@
             </div>
 
             <div class="flex items-center gap-4">
-                <a href="{{ route('tutor.profile.public', 'sarah-mitchell') }}" target="_blank" class="hidden sm:flex items-center text-xs font-bold text-brand-green hover:text-brand-red transition-colors bg-brand-lightgreen px-3 py-1.5 rounded-full">
+                <a href="{{ route('tutor.profile.public', auth()->user()->slug ?? 'preview') }}" target="_blank" class="hidden sm:flex items-center text-xs font-bold text-brand-green hover:text-brand-red transition-colors bg-brand-lightgreen px-3 py-1.5 rounded-full">
                     View Public Page <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
                 </a>
-                <div class="w-8 h-8 rounded-full bg-brand-lightgreen text-brand-green flex items-center justify-center font-bold text-sm cursor-pointer border border-brand-green/20">SM</div>
+                
+                <div class="relative">
+                    <button @click="profileOpen = !profileOpen" @click.away="profileOpen = false" class="w-8 h-8 rounded-full bg-brand-lightgreen text-brand-green flex items-center justify-center font-bold text-sm cursor-pointer border border-brand-green/20 focus:outline-none hover:bg-brand-green hover:text-white transition-colors">
+                        {{ substr(auth()->user()->name ?? 'T', 0, 1) }}
+                    </button>
+
+                    <div x-show="profileOpen" x-cloak
+                         x-transition:enter="transition ease-out duration-100"
+                         x-transition:enter-start="opacity-0 scale-95"
+                         x-transition:enter-end="opacity-100 scale-100"
+                         class="absolute right-0 mt-3 w-48 bg-white rounded-xl shadow-lg border border-gray-100 py-2 text-brand-slate overflow-hidden">
+                        <div class="px-4 py-3 border-b border-gray-50 bg-gray-50">
+                            <p class="text-sm font-bold leading-tight truncate">{{ auth()->user()->name ?? 'Tutor' }}</p>
+                            <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest truncate">{{ auth()->user()->email ?? 'tutor@classflow.com' }}</p>
+                        </div>
+                        
+                        <a href="{{ route('tutor.profile.edit') }}" class="block px-4 py-2 text-sm font-bold text-gray-600 hover:bg-brand-lightgreen hover:text-brand-green transition-colors">Edit Profile</a>
+                        
+                        <div class="h-px bg-gray-100 my-1"></div>
+                        
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit" class="block w-full text-left px-4 py-2 text-sm font-bold text-brand-red hover:bg-red-50 transition-colors">Log Out</button>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </header>
@@ -51,7 +77,7 @@
         
         <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
             <div>
-                <h1 class="text-3xl font-extrabold text-brand-slate">Welcome back, Sarah</h1>
+                <h1 class="text-3xl font-extrabold text-brand-slate">Welcome back, {{ explode(' ', trim(auth()->user()->name ?? 'Educator'))[0] }}</h1>
                 <p class="text-gray-500 mt-1">You have <strong class="text-brand-green">2 sessions</strong> scheduled for today.</p>
             </div>
             <button class="px-5 py-2.5 bg-brand-slate text-white text-sm font-bold rounded-xl shadow-sm hover:bg-gray-800 transition-colors flex items-center gap-2">
@@ -162,7 +188,7 @@
                 
                 <div class="bg-brand-slate text-white rounded-3xl p-6 shadow-xl relative overflow-hidden" 
                      x-data="{ 
-                        link: 'classflowpro.com/tutors/sarah-mitchell', 
+                        link: 'classflowpro.com/tutors/{{ auth()->user()->slug ?? 'your-profile' }}', 
                         copied: false,
                         copyToClipboard() {
                             navigator.clipboard.writeText('https://' + this.link);
@@ -178,7 +204,7 @@
                         <input type="text" readonly x-model="link" class="bg-transparent text-sm text-gray-300 px-3 w-full outline-none select-all">
                         <button @click="copyToClipboard()" class="px-4 py-2 bg-brand-green text-white text-xs font-bold rounded-lg hover:bg-opacity-90 transition-all whitespace-nowrap">
                             <span x-show="!copied">Copy</span>
-                            <span x-show="copied">Copied!</span>
+                            <span x-show="copied" x-cloak>Copied!</span>
                         </button>
                     </div>
                 </div>
