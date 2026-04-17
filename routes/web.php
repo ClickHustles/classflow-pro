@@ -55,11 +55,18 @@ Route::get('/password/reset/{token}', function ($token) { return view('auth.pass
 */
 Route::middleware(['auth'])->group(function() {
 
-    // 1. Smart Dashboard Redirect (FIXED: Added name('dashboard'))
+    // 1. Smart Dashboard Redirect (Upgraded to handle Admins)
     Route::get('/dashboard', function () {
-        if (auth()->user()->isTutor()) {
+        $role = auth()->user()->role;
+        
+        if ($role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
+        if ($role === 'tutor') {
             return redirect()->route('tutor.dashboard');
         }
+        
+        // Default fallback for parents/students
         return redirect()->route('parent.dashboard');
     })->name('dashboard');
 
